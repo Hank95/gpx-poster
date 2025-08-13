@@ -9,7 +9,9 @@ import { ElevationSkyline } from "../components/visualizations/ElevationSkyline"
 import { TopoGhost } from "../components/visualizations/TopoGhost";
 import { PulsePath } from "../components/visualizations/PulsePath";
 import { CadenceRosette } from "../components/visualizations/CadenceRosette";
+import { ExportControls } from "../components/ExportControls";
 import type { ProcessedActivity, VisualizationTemplate, StylePreset } from "../types/activity";
+import { achievementThemes } from "../utils/achievementThemes";
 
 export const Route = createFileRoute("/studio")({
   component: Studio,
@@ -18,7 +20,7 @@ export const Route = createFileRoute("/studio")({
 function Studio() {
   const [activity, setActivity] = useState<ProcessedActivity | null>(null);
   const [template, setTemplate] = useState<VisualizationTemplate>('ribbon');
-  const [style, setStyle] = useState<StylePreset>('minimal');
+  const [style, setStyle] = useState<StylePreset | keyof typeof achievementThemes>('victory');
   const [colorBy, setColorBy] = useState<'hr' | 'pace' | 'elevation'>('pace');
   const [thicknessScale, setThicknessScale] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -197,13 +199,22 @@ function Studio() {
                   <label className="block text-sm font-medium mb-2">Style</label>
                   <select
                     value={style}
-                    onChange={(e) => setStyle(e.target.value as StylePreset)}
+                    onChange={(e) => setStyle(e.target.value as StylePreset | keyof typeof achievementThemes)}
                     className="w-full px-3 py-2 bg-neutral-800 border border-neutral-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
-                    <option value="minimal">Minimal Mono</option>
-                    <option value="neon">Neon Heat</option>
-                    <option value="blueprint">Blueprint</option>
-                    <option value="retro">Retro Topo</option>
+                    <optgroup label="🏆 Achievement Themes">
+                      <option value="victory">Victory Gold</option>
+                      <option value="neon">Urban Neon</option>
+                      <option value="nature">Nature Explorer</option>
+                      <option value="champion">Minimalist Champion</option>
+                      <option value="fire">Fire Storm</option>
+                      <option value="ocean">Ocean Depth</option>
+                    </optgroup>
+                    <optgroup label="📐 Classic Styles">
+                      <option value="minimal">Minimal Mono</option>
+                      <option value="blueprint">Blueprint</option>
+                      <option value="retro">Retro Topo</option>
+                    </optgroup>
                   </select>
                 </div>
                 
@@ -296,6 +307,13 @@ function Studio() {
                   />
                 )}
               </div>
+            </div>
+            
+            <div className="mt-6">
+              <ExportControls
+                activity={activity}
+                visualization={template}
+              />
             </div>
           </>
         )}

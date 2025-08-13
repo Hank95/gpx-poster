@@ -1,11 +1,11 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import type { ProcessedActivity } from '../../types/activity';
-import { stylePresets } from '../../utils/stylePresets';
+import { getStyleConfig } from '../../utils/themeHelper';
 
 interface CadenceRosetteProps {
   activity: ProcessedActivity;
-  style: keyof typeof stylePresets;
+  style: string;
   width: number;
   height: number;
   metric?: 'cadence' | 'power' | 'pace';
@@ -19,7 +19,7 @@ export function CadenceRosette({
   metric = 'cadence',
 }: CadenceRosetteProps) {
   const svgRef = useRef<SVGSVGElement>(null);
-  const styleConfig = stylePresets[style];
+  const styleConfig = getStyleConfig(style);
   
   useEffect(() => {
     if (!svgRef.current || !activity.splits.length) return;

@@ -2,11 +2,11 @@ import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { contours } from 'd3-contour';
 import type { ProcessedActivity } from '../../types/activity';
-import { stylePresets } from '../../utils/stylePresets';
+import { getStyleConfig } from '../../utils/themeHelper';
 
 interface TopoGhostProps {
   activity: ProcessedActivity;
-  style: keyof typeof stylePresets;
+  style: string;
   width: number;
   height: number;
   contourDensity?: number;
@@ -20,7 +20,8 @@ export function TopoGhost({
   contourDensity = 20,
 }: TopoGhostProps) {
   const svgRef = useRef<SVGSVGElement>(null);
-  const styleConfig = stylePresets[style];
+  
+  const styleConfig = getStyleConfig(style);
   
   useEffect(() => {
     if (!svgRef.current || !activity.processedPoints.length) return;
@@ -51,13 +52,39 @@ export function TopoGhost({
     const g = svg.append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
     
-    // Background
-    g.append('rect')
-      .attr('width', width)
-      .attr('height', height)
-      .attr('x', -margin.left)
-      .attr('y', -margin.top)
-      .attr('fill', styleConfig.background);
+    // Handle gradient backgrounds from achievement themes
+    const backgroundId = `topo-bg-${Date.now()}`;
+    if (styleConfig.background && styleConfig.background.includes('gradient')) {
+      const defs = g.append('defs');
+      const gradient = defs.append('linearGradient')
+        .attr('id', backgroundId)
+        .attr('x1', '0%')
+        .attr('y1', '0%')
+        .attr('x2', '100%')
+        .attr('y2', '100%');
+      
+      // Parse gradient colors (simplified - could be enhanced)
+      const colors = styleConfig.background.match(/#[0-9a-fA-F]{6}/g) || ['#000000'];
+      colors.forEach((color, i) => {
+        gradient.append('stop')
+          .attr('offset', `${(i * 100) / (colors.length - 1)}%`)
+          .attr('stop-color', color);
+      });
+      
+      g.append('rect')
+        .attr('width', width)
+        .attr('height', height)
+        .attr('x', -margin.left)
+        .attr('y', -margin.top)
+        .attr('fill', `url(#${backgroundId})`);
+    } else {
+      g.append('rect')
+        .attr('width', width)
+        .attr('height', height)
+        .attr('x', -margin.left)
+        .attr('y', -margin.top)
+        .attr('fill', styleConfig.background);
+    }
     
     // Generate elevation grid for contours
     const gridSize = contourDensity;
@@ -151,7 +178,7 @@ export function TopoGhost({
         .attr('y', -30)
         .attr('text-anchor', 'middle')
         .attr('fill', styleConfig.text)
-        .attr('font-family', styleConfig.font)
+        .attr('font-family', (styleConfig as any).font || (styleConfig as any).bodyFont || 'Inter, system-ui, sans-serif')
         .attr('font-size', '24px')
         .attr('font-weight', 'bold')
         .text(activity.name);
@@ -168,7 +195,7 @@ export function TopoGhost({
       .attr('y', -8)
       .attr('text-anchor', 'middle')
       .attr('fill', styleConfig.textSecondary)
-      .attr('font-family', styleConfig.font)
+      .attr('font-family', (styleConfig as any).font || (styleConfig as any).bodyFont || 'Inter, system-ui, sans-serif')
       .attr('font-size', '14px')
       .text(subtitle);
     
@@ -177,7 +204,7 @@ export function TopoGhost({
       .attr('x', 0)
       .attr('y', innerHeight + 40)
       .attr('fill', styleConfig.textSecondary)
-      .attr('font-family', styleConfig.font)
+      .attr('font-family', (styleConfig as any).font || (styleConfig as any).bodyFont || 'Inter, system-ui, sans-serif')
       .attr('font-size', '12px')
       .text(`Elevation: ${Math.round(eleExtent[0])}m - ${Math.round(eleExtent[1])}m`);
     

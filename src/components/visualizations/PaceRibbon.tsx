@@ -2,14 +2,17 @@ import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import type { ProcessedActivity } from '../../types/activity';
 import { stylePresets, getHRZoneColor } from '../../utils/stylePresets';
+import { achievementThemes, generateAchievementTitle, generateMotivationalSubtitle } from '../../utils/achievementThemes';
+import { analyzeActivity } from '../../utils/achievementDetector';
 
 interface PaceRibbonProps {
   activity: ProcessedActivity;
-  style: keyof typeof stylePresets;
+  style: keyof typeof stylePresets | keyof typeof achievementThemes;
   width: number;
   height: number;
   colorBy: 'hr' | 'pace' | 'elevation';
   thicknessScale: number;
+  showAchievements?: boolean;
 }
 
 export function PaceRibbon({
@@ -19,9 +22,14 @@ export function PaceRibbon({
   height,
   colorBy,
   thicknessScale = 1,
+  showAchievements = true,
 }: PaceRibbonProps) {
   const svgRef = useRef<SVGSVGElement>(null);
-  const styleConfig = stylePresets[style];
+  
+  // Use achievement theme if available, otherwise fall back to style preset
+  const themeConfig = achievementThemes[style as keyof typeof achievementThemes];
+  const styleConfig = themeConfig || stylePresets[style as keyof typeof stylePresets];
+  const analysis = showAchievements ? analyzeActivity(activity) : null;
   
   useEffect(() => {
     if (!svgRef.current || !activity.processedPoints.length) return;
@@ -92,39 +100,82 @@ export function PaceRibbon({
         .attr('opacity', 0.9);
     }
     
-    if (activity.name) {
+    // Achievement-focused typography
+    if (showAchievements && analysis && themeConfig) {
+      // Main achievement title
+      const achievementTitle = generateAchievementTitle(activity);
       g.append('text')
         .attr('x', innerWidth / 2)
-        .attr('y', -30)
+        .attr('y', -45)
         .attr('text-anchor', 'middle')
-        .attr('fill', styleConfig.text)
-        .attr('font-family', styleConfig.font)
-        .attr('font-size', '24px')
-        .attr('font-weight', 'bold')
-        .text(activity.name);
+        .attr('fill', themeConfig.achievementColor)
+        .attr('font-family', themeConfig.displayFont)
+        .attr('font-size', '32px')
+        .attr('font-weight', '900')
+        .attr('letter-spacing', '2px')
+        .text(achievementTitle);
+      
+      // Activity name
+      if (activity.name) {
+        g.append('text')
+          .attr('x', innerWidth / 2)
+          .attr('y', -15)
+          .attr('text-anchor', 'middle')
+          .attr('fill', themeConfig.text)
+          .attr('font-family', themeConfig.bodyFont)
+          .attr('font-size', '18px')
+          .attr('font-weight', '600')
+          .text(activity.name);
+      }
+      
+      // Motivational subtitle
+      const motivationalSubtitle = generateMotivationalSubtitle(activity);
+      g.append('text')
+        .attr('x', innerWidth / 2)
+        .attr('y', 5)
+        .attr('text-anchor', 'middle')
+        .attr('fill', themeConfig.textSecondary)
+        .attr('font-family', themeConfig.bodyFont)
+        .attr('font-size', '14px')
+        .attr('font-style', 'italic')
+        .text(motivationalSubtitle);
+      
+    } else {
+      // Fallback to original layout
+      if (activity.name) {
+        g.append('text')
+          .attr('x', innerWidth / 2)
+          .attr('y', -30)
+          .attr('text-anchor', 'middle')
+          .attr('fill', styleConfig.text)
+          .attr('font-family', (styleConfig as any).font || (styleConfig as any).bodyFont || 'Inter, system-ui, sans-serif')
+          .attr('font-size', '24px')
+          .attr('font-weight', 'bold')
+          .text(activity.name);
+      }
+      
+      const subtitle = [
+        `${(activity.totalDistance / 1000).toFixed(1)} km`,
+        `${Math.round(activity.totalElevationGain)} m`,
+        formatTime(activity.totalTime),
+      ].join(' · ');
+      
+      g.append('text')
+        .attr('x', innerWidth / 2)
+        .attr('y', -8)
+        .attr('text-anchor', 'middle')
+        .attr('fill', styleConfig.textSecondary)
+        .attr('font-family', (styleConfig as any).font || (styleConfig as any).bodyFont || 'Inter, system-ui, sans-serif')
+        .attr('font-size', '14px')
+        .text(subtitle);
     }
-    
-    const subtitle = [
-      `${(activity.totalDistance / 1000).toFixed(1)} km`,
-      `${Math.round(activity.totalElevationGain)} m`,
-      formatTime(activity.totalTime),
-    ].join(' · ');
-    
-    g.append('text')
-      .attr('x', innerWidth / 2)
-      .attr('y', -8)
-      .attr('text-anchor', 'middle')
-      .attr('fill', styleConfig.textSecondary)
-      .attr('font-family', styleConfig.font)
-      .attr('font-size', '14px')
-      .text(subtitle);
     
     if (activity.fastestSplit) {
       g.append('text')
         .attr('x', 0)
         .attr('y', innerHeight + 40)
         .attr('fill', styleConfig.textSecondary)
-        .attr('font-family', styleConfig.font)
+        .attr('font-family', (styleConfig as any).font || (styleConfig as any).bodyFont || 'Inter, system-ui, sans-serif')
         .attr('font-size', '12px')
         .text(`Fastest km: ${formatPace(activity.fastestSplit.pace)}`);
     }
@@ -135,7 +186,7 @@ export function PaceRibbon({
         .attr('y', innerHeight + 40)
         .attr('text-anchor', 'end')
         .attr('fill', styleConfig.textSecondary)
-        .attr('font-family', styleConfig.font)
+        .attr('font-family', (styleConfig as any).font || (styleConfig as any).bodyFont || 'Inter, system-ui, sans-serif')
         .attr('font-size', '12px')
         .text(`Steepest: ${activity.steepestClimb.description}`);
     }
