@@ -2,9 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useCallback } from "react";
 import { parseGPXFile } from "../utils/gpxParser";
 import { parseFITFile } from "../utils/fitParser";
+import { parseTCXFile } from "../utils/tcxParser";
 import { processActivity } from "../utils/dataProcessor";
 import { PaceRibbon } from "../components/visualizations/PaceRibbon";
 import { ElevationSkyline } from "../components/visualizations/ElevationSkyline";
+import { TopoGhost } from "../components/visualizations/TopoGhost";
+import { PulsePath } from "../components/visualizations/PulsePath";
+import { CadenceRosette } from "../components/visualizations/CadenceRosette";
 import type { ProcessedActivity, VisualizationTemplate, StylePreset } from "../types/activity";
 
 export const Route = createFileRoute("/studio")({
@@ -33,8 +37,10 @@ function Studio() {
         rawActivity = await parseGPXFile(file);
       } else if (fileName.endsWith('.fit')) {
         rawActivity = await parseFITFile(file);
+      } else if (fileName.endsWith('.tcx')) {
+        rawActivity = await parseTCXFile(file);
       } else {
-        throw new Error('Unsupported file format. Please upload a GPX or FIT file.');
+        throw new Error('Unsupported file format. Please upload a GPX, FIT, or TCX file.');
       }
       
       const processed = processActivity(rawActivity);
@@ -72,13 +78,14 @@ function Studio() {
     const files = Array.from(e.dataTransfer.files);
     const file = files.find(f => 
       f.name.toLowerCase().endsWith('.gpx') || 
-      f.name.toLowerCase().endsWith('.fit')
+      f.name.toLowerCase().endsWith('.fit') ||
+      f.name.toLowerCase().endsWith('.tcx')
     );
     
     if (file) {
       await processFile(file);
     } else {
-      setError('Please drop a GPX or FIT file');
+      setError('Please drop a GPX, FIT, or TCX file');
     }
   }, [processFile]);
   
@@ -109,14 +116,14 @@ function Studio() {
                 <p className="mb-2 text-sm text-neutral-400">
                   <span className="font-semibold">Click to upload</span> or drag and drop
                 </p>
-                <p className="text-xs text-neutral-500">GPX or FIT files (Strava exports supported)</p>
+                <p className="text-xs text-neutral-500">GPX, FIT, or TCX files (Strava/Garmin exports supported)</p>
                 {isProcessing && <p className="mt-4 text-blue-400">Processing...</p>}
                 {error && <p className="mt-4 text-red-400">{error}</p>}
               </div>
               <input
                 type="file"
                 className="hidden"
-                accept=".gpx,.fit"
+                accept=".gpx,.fit,.tcx"
                 onChange={handleFileUpload}
                 disabled={isProcessing}
               />
@@ -180,6 +187,9 @@ function Studio() {
                   >
                     <option value="ribbon">Pace Ribbon</option>
                     <option value="skyline">Elevation Skyline</option>
+                    <option value="topo">Topo Ghost</option>
+                    <option value="pulse">Pulse Path</option>
+                    <option value="rosette">Cadence Rosette</option>
                   </select>
                 </div>
                 
@@ -259,6 +269,30 @@ function Studio() {
                     width={visualizationWidth}
                     height={visualizationHeight}
                     showSplits={true}
+                  />
+                )}
+                {template === 'topo' && (
+                  <TopoGhost
+                    activity={activity}
+                    style={style}
+                    width={visualizationWidth}
+                    height={visualizationHeight}
+                  />
+                )}
+                {template === 'pulse' && (
+                  <PulsePath
+                    activity={activity}
+                    style={style}
+                    width={visualizationWidth}
+                    height={visualizationHeight}
+                  />
+                )}
+                {template === 'rosette' && (
+                  <CadenceRosette
+                    activity={activity}
+                    style={style}
+                    width={visualizationWidth}
+                    height={visualizationHeight}
                   />
                 )}
               </div>

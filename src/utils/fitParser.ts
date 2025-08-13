@@ -13,12 +13,15 @@ export async function parseFITFile(file: File): Promise<Activity> {
   }
   
   const result = decoder.read();
-  console.log('FIT decoder result keys:', Object.keys(result));
+  console.log('FIT decoder result:', result);
   
   // Handle the actual structure returned by this FIT SDK
-  const messages = result.messages || result;
-  console.log('Messages structure:', messages);
-  console.log('Messages keys:', Object.keys(messages));
+  const messages = (result as any).messages || result;
+  console.log('Messages found:', !!messages);
+  
+  if (messages && typeof messages === 'object') {
+    console.log('Messages keys:', Object.keys(messages));
+  }
   
   const points: Point[] = [];
   let name = file.name.replace('.fit', '');

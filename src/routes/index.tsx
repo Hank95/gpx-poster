@@ -22,7 +22,9 @@ function Index() {
           <ul className="space-y-2 text-neutral-300">
             <li>• <strong>Pace Ribbon:</strong> Dynamic line thickness based on pace</li>
             <li>• <strong>Elevation Skyline:</strong> Beautiful elevation profiles</li>
-            <li>• <strong>HR Zones:</strong> Color-coded heart rate visualization</li>
+            <li>• <strong>Topo Ghost:</strong> Faint contour lines under track</li>
+            <li>• <strong>Pulse Path:</strong> HR waveform along route</li>
+            <li>• <strong>Cadence Rosette:</strong> Radial split visualization</li>
             <li>• <strong>Custom Styles:</strong> Minimal, Neon, Blueprint, Retro</li>
           </ul>
         </div>
@@ -30,7 +32,7 @@ function Index() {
         <div className="bg-neutral-900 rounded-lg p-6">
           <h2 className="text-2xl font-semibold mb-4">📊 Features</h2>
           <ul className="space-y-2 text-neutral-300">
-            <li>• GPX and FIT file support (Strava exports)</li>
+            <li>• GPX, FIT, and TCX file support (Strava/Garmin exports)</li>
             <li>• Heart rate, cadence, and power data</li>
             <li>• Automatic metric computation</li>
             <li>• Split detection and analysis</li>
@@ -50,7 +52,7 @@ function Index() {
       </div>
       
       <div className="mt-16 text-center text-neutral-500 text-sm">
-        <p>Upload your GPX file and create stunning visualizations of your runs, rides, and hikes.</p>
+        <p>Upload your GPX, FIT, or TCX file and create stunning visualizations of your runs, rides, and hikes.</p>
       </div>
     </div>
   );
