@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="GPX Poster Sample" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>Sample Trail Run</name>
+    <time>2024-01-15T09:00:00Z</time>
+  </metadata>
+  <trk>
+    <name>Morning Trail Run</name>
+    <trkseg>
+      <trkpt lat="37.7749" lon="-122.4194">
+        <ele>10</ele>
+        <time>2024-01-15T09:00:00Z</time>
+      </trkpt>
+      <trkpt lat="37.7751" lon="-122.4192">
+        <ele>12</ele>
+        <time>2024-01-15T09:00:10Z</time>
+      </trkpt>
+      <trkpt lat="37.7753" lon="-122.4190">
+        <ele>15</ele>
+        <time>2024-01-15T09:00:20Z</time>
+      </trkpt>
+      <trkpt lat="37.7755" lon="-122.4188">
+        <ele>18</ele>
+        <time>2024-01-15T09:00:30Z</time>
+      </trkpt>
+      <trkpt lat="37.7757" lon="-122.4186">
+        <ele>22</ele>
+        <time>2024-01-15T09:00:40Z</time>
+      </trkpt>
+      <trkpt lat="37.7759" lon="-122.4184">
+        <ele>25</ele>
+        <time>2024-01-15T09:00:50Z</time>
+      </trkpt>
+      <trkpt lat="37.7761" lon="-122.4182">
+        <ele>28</ele>
+        <time>2024-01-15T09:01:00Z</time>
+      </trkpt>
+      <trkpt lat="37.7763" lon="-122.4180">
+        <ele>32</ele>
+        <time>2024-01-15T09:01:10Z</time>
+      </trkpt>
+      <trkpt lat="37.7765" lon="-122.4178">
+        <ele>35</ele>
+        <time>2024-01-15T09:01:20Z</time>
+      </trkpt>
+      <trkpt lat="37.7767" lon="-122.4176">
+        <ele>38</ele>
+        <time>2024-01-15T09:01:30Z</time>
+      </trkpt>
+      <trkpt lat="37.7769" lon="-122.4174">
+        <ele>40</ele>
+        <time>2024-01-15T09:01:40Z</time>
+      </trkpt>
+      <trkpt lat="37.7771" lon="-122.4172">
+        <ele>42</ele>
+        <time>2024-01-15T09:01:50Z</time>
+      </trkpt>
+      <trkpt lat="37.7773" lon="-122.4170">
+        <ele>45</ele>
+        <time>2024-01-15T09:02:00Z</time>
+      </trkpt>
+      <trkpt lat="37.7775" lon="-122.4168">
+        <ele>48</ele>
+        <time>2024-01-15T09:02:10Z</time>
+      </trkpt>
+      <trkpt lat="37.7777" lon="-122.4166">
+        <ele>50</ele>
+        <time>2024-01-15T09:02:20Z</time>
+      </trkpt>
+      <trkpt lat="37.7779" lon="-122.4164">
+        <ele>52</ele>
+        <time>2024-01-15T09:02:30Z</time>
+      </trkpt>
+      <trkpt lat="37.7781" lon="-122.4162">
+        <ele>55</ele>
+        <time>2024-01-15T09:02:40Z</time>
+      </trkpt>
+      <trkpt lat="37.7783" lon="-122.4160">
+        <ele>58</ele>
+        <time>2024-01-15T09:02:50Z</time>
+      </trkpt>
+      <trkpt lat="37.7785" lon="-122.4158">
+        <ele>60</ele>
+        <time>2024-01-15T09:03:00Z</time>
+      </trkpt>
+      <trkpt lat="37.7787" lon="-122.4156">
+        <ele>62</ele>
+        <time>2024-01-15T09:03:10Z</time>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
